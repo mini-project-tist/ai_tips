@@ -1,0 +1,25 @@
+# A very simple Flask Hello World app for you to get started with...
+
+from flask import Flask, request
+
+from dotenv import load_dotenv,find_dotenv
+import os
+
+from google import genai
+
+load_dotenv(find_dotenv("/home/majorprojectSmartMeter/mysite/api.env"))
+api_key = os.getenv("Gemini_API")
+
+app = Flask(__name__)
+@app.route('/')
+def hello_world():
+    device = str(request.args.get('device'))
+    client = genai.Client(api_key=api_key)
+
+    response = client.models.generate_content(
+        model="gemini-1.5-pro",
+        contents=f"generate 5 sustainable energy conservation tips for {device}. the tips should be precise and short. add relavant emojis to the each heading of the tips")
+    
+    return "".join(response.text.split("**"))
+
+
